@@ -1,0 +1,26 @@
+From: "Accounts Department" <accounts@example.com>
+To: advait@example.net
+Subject: Invoice Attached
+Date: Sun, 4 Oct 2026 14:00:00 +0530
+Message-ID: <invoice-test@example.com>
+MIME-Version: 1.0
+Content-Type: multipart/mixed; boundary="MAILTRACE-BOUNDARY"
+
+--MAILTRACE-BOUNDARY
+Content-Type: text/plain; charset="UTF-8"
+
+Dear User,
+
+Please review the attached invoice.
+
+Regards,
+Accounts Department
+
+--MAILTRACE-BOUNDARY
+Content-Type: text/plain; name="invoice.txt"
+Content-Disposition: attachment; filename="invoice.txt"
+Content-Transfer-Encoding: base64
+
+VGhpcyBpcyBhIGhhcm1sZXNzIE1BSUxUUkFDRS1YIHRlc3QgYXR0YWNobWVudC4=
+
+--MAILTRACE-BOUNDARY--

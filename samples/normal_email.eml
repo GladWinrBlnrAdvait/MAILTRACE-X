@@ -1,0 +1,18 @@
+From: "University Department" <department@university.example>
+To: advait@example.net
+Reply-To: department@university.example
+Subject: Weekly Project Meeting
+Date: Sun, 4 Oct 2026 15:00:00 +0530
+Message-ID: <meeting001@university.example>
+Return-Path: <department@university.example>
+Received: from mail.university.example (192.0.2.30) by mx.example.net
+Authentication-Results: mx.example.net; spf=pass; dkim=pass; dmarc=pass
+MIME-Version: 1.0
+Content-Type: text/plain; charset="UTF-8"
+
+Hello,
+
+The weekly project meeting will be held tomorrow.
+
+Regards,
+Project Coordinator
