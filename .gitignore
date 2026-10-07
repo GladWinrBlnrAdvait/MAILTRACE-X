@@ -3,3 +3,8 @@ __pycache__/
 *.pyc
 .vscode/
 analysis_result.json
+__pycache__/
+*.py[cod]
+.venv/
+mailtrace.db
+analysis_result.json
