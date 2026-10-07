@@ -21,8 +21,8 @@
             "0 ."
           ],
           "NS": [
-            "elliott.ns.cloudflare.com.",
-            "hera.ns.cloudflare.com."
+            "hera.ns.cloudflare.com.",
+            "elliott.ns.cloudflare.com."
           ]
         }
       },
@@ -38,8 +38,8 @@
             "172.66.157.237"
           ],
           "AAAA": [
-            "2606:4700:10::6814:1a88",
-            "2606:4700:10::ac42:9ded"
+            "2606:4700:10::ac42:9ded",
+            "2606:4700:10::6814:1a88"
           ],
           "MX": [
             "0 ."
@@ -65,24 +65,32 @@
       },
       {
         "type": "ip",
-        "value": "172.66.157.237",
-        "risk": 0,
-        "details": {
-          "ip": "172.66.157.237",
-          "status": "ok",
-          "asn": "AS13335",
-          "asn_description": "CLOUDFLARENET - Cloudflare, Inc., US",
-          "country": "US",
-          "network": "172.64.0.0/13",
-          "org": "CLOUDFLARENET"
-        }
-      },
-      {
-        "type": "ip",
         "value": "104.20.23.154",
         "risk": 0,
         "details": {
           "ip": "104.20.23.154",
+          "status": "ok",
+          "asn": "AS13335",
+          "asn_description": "CLOUDFLARENET - Cloudflare, Inc., US",
+          "country": "US",
+          "network": "104.16.0.0/12",
+          "org": "CLOUDFLARENET"
+        }
+      },
+      {
+        "type": "asn",
+        "value": "AS13335",
+        "risk": 0,
+        "details": {
+          "description": "CLOUDFLARENET - Cloudflare, Inc., US"
+        }
+      },
+      {
+        "type": "ip",
+        "value": "104.20.26.136",
+        "risk": 0,
+        "details": {
+          "ip": "104.20.26.136",
           "status": "ok",
           "asn": "AS13335",
           "asn_description": "CLOUDFLARENET - Cloudflare, Inc., US",
@@ -107,6 +115,20 @@
       },
       {
         "type": "ip",
+        "value": "172.66.157.237",
+        "risk": 0,
+        "details": {
+          "ip": "172.66.157.237",
+          "status": "ok",
+          "asn": "AS13335",
+          "asn_description": "CLOUDFLARENET - Cloudflare, Inc., US",
+          "country": "US",
+          "network": "172.64.0.0/13",
+          "org": "CLOUDFLARENET"
+        }
+      },
+      {
+        "type": "ip",
         "value": "192.0.2.20",
         "risk": 0,
         "details": {
@@ -118,32 +140,28 @@
           "network": null,
           "org": null
         }
-      },
-      {
-        "type": "ip",
-        "value": "104.20.26.136",
-        "risk": 0,
-        "details": {
-          "ip": "104.20.26.136",
-          "status": "ok",
-          "asn": "AS13335",
-          "asn_description": "CLOUDFLARENET - Cloudflare, Inc., US",
-          "country": "US",
-          "network": "104.16.0.0/12",
-          "org": "CLOUDFLARENET"
-        }
       }
     ],
     "relationships": [
+      {
+        "source": "CASE-001",
+        "relation": "contains",
+        "target": "example.com"
+      },
+      {
+        "source": "example.com",
+        "relation": "resolves_to",
+        "target": "104.20.23.154"
+      },
       {
         "source": "example.com",
         "relation": "resolves_to",
         "target": "172.66.147.243"
       },
       {
-        "source": "example.com",
-        "relation": "resolves_to",
-        "target": "104.20.23.154"
+        "source": "CASE-001",
+        "relation": "contains",
+        "target": "example.org"
       },
       {
         "source": "example.org",
@@ -156,12 +174,17 @@
         "target": "172.66.157.237"
       },
       {
-        "source": "172.66.157.237",
+        "source": "CASE-001",
+        "relation": "contains",
+        "target": "login.example.com"
+      },
+      {
+        "source": "104.20.23.154",
         "relation": "belongs_to",
         "target": "AS13335"
       },
       {
-        "source": "104.20.23.154",
+        "source": "104.20.26.136",
         "relation": "belongs_to",
         "target": "AS13335"
       },
@@ -171,9 +194,14 @@
         "target": "AS13335"
       },
       {
-        "source": "104.20.26.136",
+        "source": "172.66.157.237",
         "relation": "belongs_to",
         "target": "AS13335"
+      },
+      {
+        "source": "CASE-001",
+        "relation": "contains",
+        "target": "192.0.2.20"
       }
     ],
     "related_cases": [
@@ -206,8 +234,8 @@
             "0 ."
           ],
           "NS": [
-            "elliott.ns.cloudflare.com.",
-            "hera.ns.cloudflare.com."
+            "hera.ns.cloudflare.com.",
+            "elliott.ns.cloudflare.com."
           ]
         }
       },
@@ -226,6 +254,14 @@
         }
       },
       {
+        "type": "asn",
+        "value": "AS13335",
+        "risk": 0,
+        "details": {
+          "description": "CLOUDFLARENET - Cloudflare, Inc., US"
+        }
+      },
+      {
         "type": "ip",
         "value": "172.66.147.243",
         "risk": 0,
@@ -238,18 +274,33 @@
           "network": "172.64.0.0/13",
           "org": "CLOUDFLARENET"
         }
+      },
+      {
+        "type": "hash",
+        "value": "1f188c06b85d208dd4497edd447b108642f3fda365c2d5d50bbfcd2b495794e0",
+        "risk": 0,
+        "details": {
+          "filename": "invoice.txt",
+          "mime_type": "text/plain",
+          "size_bytes": 47
+        }
       }
     ],
     "relationships": [
       {
-        "source": "example.com",
-        "relation": "resolves_to",
-        "target": "172.66.147.243"
+        "source": "CASE-002",
+        "relation": "contains",
+        "target": "example.com"
       },
       {
         "source": "example.com",
         "relation": "resolves_to",
         "target": "104.20.23.154"
+      },
+      {
+        "source": "example.com",
+        "relation": "resolves_to",
+        "target": "172.66.147.243"
       },
       {
         "source": "104.20.23.154",
