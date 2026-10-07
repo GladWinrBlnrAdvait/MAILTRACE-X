@@ -16,8 +16,9 @@ class Relationship(BaseModel):
 
 class RelatedCase(BaseModel):
     case_id: str
-    shared: str
+    shared: str                  # the strongest shared item
     confidence: float
+    all_shared: list[str] = []   # every shared item (new)
 
 
 class CorrelatedThreatData(BaseModel):

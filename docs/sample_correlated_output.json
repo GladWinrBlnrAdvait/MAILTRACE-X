@@ -21,8 +21,8 @@
             "0 ."
           ],
           "NS": [
-            "hera.ns.cloudflare.com.",
-            "elliott.ns.cloudflare.com."
+            "elliott.ns.cloudflare.com.",
+            "hera.ns.cloudflare.com."
           ]
         }
       },
@@ -38,8 +38,8 @@
             "172.66.157.237"
           ],
           "AAAA": [
-            "2606:4700:10::ac42:9ded",
-            "2606:4700:10::6814:1a88"
+            "2606:4700:10::6814:1a88",
+            "2606:4700:10::ac42:9ded"
           ],
           "MX": [
             "0 ."
@@ -208,7 +208,10 @@
       {
         "case_id": "CASE-002",
         "shared": "example.com",
-        "confidence": 0.7
+        "confidence": 0.7,
+        "all_shared": [
+          "example.com"
+        ]
       }
     ]
   },
@@ -234,8 +237,8 @@
             "0 ."
           ],
           "NS": [
-            "hera.ns.cloudflare.com.",
-            "elliott.ns.cloudflare.com."
+            "elliott.ns.cloudflare.com.",
+            "hera.ns.cloudflare.com."
           ]
         }
       },
@@ -322,7 +325,10 @@
       {
         "case_id": "CASE-001",
         "shared": "example.com",
-        "confidence": 0.7
+        "confidence": 0.7,
+        "all_shared": [
+          "example.com"
+        ]
       }
     ]
   }
