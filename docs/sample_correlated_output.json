@@ -1,0 +1,278 @@
+[
+  {
+    "case_id": "CASE-001",
+    "entities": [
+      {
+        "type": "domain",
+        "value": "example.com",
+        "risk": 0,
+        "details": {
+          "domain": "example.com",
+          "status": "ok",
+          "A": [
+            "172.66.147.243",
+            "104.20.23.154"
+          ],
+          "AAAA": [
+            "2606:4700:10::6814:179a",
+            "2606:4700:10::ac42:93f3"
+          ],
+          "MX": [
+            "0 ."
+          ],
+          "NS": [
+            "elliott.ns.cloudflare.com.",
+            "hera.ns.cloudflare.com."
+          ]
+        }
+      },
+      {
+        "type": "domain",
+        "value": "example.org",
+        "risk": 0,
+        "details": {
+          "domain": "example.org",
+          "status": "ok",
+          "A": [
+            "104.20.26.136",
+            "172.66.157.237"
+          ],
+          "AAAA": [
+            "2606:4700:10::6814:1a88",
+            "2606:4700:10::ac42:9ded"
+          ],
+          "MX": [
+            "0 ."
+          ],
+          "NS": [
+            "katelyn.ns.cloudflare.com.",
+            "mitch.ns.cloudflare.com."
+          ]
+        }
+      },
+      {
+        "type": "domain",
+        "value": "login.example.com",
+        "risk": 0,
+        "details": {
+          "domain": "login.example.com",
+          "status": "ok",
+          "A": [],
+          "AAAA": [],
+          "MX": [],
+          "NS": []
+        }
+      },
+      {
+        "type": "ip",
+        "value": "172.66.157.237",
+        "risk": 0,
+        "details": {
+          "ip": "172.66.157.237",
+          "status": "ok",
+          "asn": "AS13335",
+          "asn_description": "CLOUDFLARENET - Cloudflare, Inc., US",
+          "country": "US",
+          "network": "172.64.0.0/13",
+          "org": "CLOUDFLARENET"
+        }
+      },
+      {
+        "type": "ip",
+        "value": "104.20.23.154",
+        "risk": 0,
+        "details": {
+          "ip": "104.20.23.154",
+          "status": "ok",
+          "asn": "AS13335",
+          "asn_description": "CLOUDFLARENET - Cloudflare, Inc., US",
+          "country": "US",
+          "network": "104.16.0.0/12",
+          "org": "CLOUDFLARENET"
+        }
+      },
+      {
+        "type": "ip",
+        "value": "172.66.147.243",
+        "risk": 0,
+        "details": {
+          "ip": "172.66.147.243",
+          "status": "ok",
+          "asn": "AS13335",
+          "asn_description": "CLOUDFLARENET - Cloudflare, Inc., US",
+          "country": "US",
+          "network": "172.64.0.0/13",
+          "org": "CLOUDFLARENET"
+        }
+      },
+      {
+        "type": "ip",
+        "value": "192.0.2.20",
+        "risk": 0,
+        "details": {
+          "ip": "192.0.2.20",
+          "status": "private_or_reserved",
+          "asn": null,
+          "asn_description": null,
+          "country": null,
+          "network": null,
+          "org": null
+        }
+      },
+      {
+        "type": "ip",
+        "value": "104.20.26.136",
+        "risk": 0,
+        "details": {
+          "ip": "104.20.26.136",
+          "status": "ok",
+          "asn": "AS13335",
+          "asn_description": "CLOUDFLARENET - Cloudflare, Inc., US",
+          "country": "US",
+          "network": "104.16.0.0/12",
+          "org": "CLOUDFLARENET"
+        }
+      }
+    ],
+    "relationships": [
+      {
+        "source": "example.com",
+        "relation": "resolves_to",
+        "target": "172.66.147.243"
+      },
+      {
+        "source": "example.com",
+        "relation": "resolves_to",
+        "target": "104.20.23.154"
+      },
+      {
+        "source": "example.org",
+        "relation": "resolves_to",
+        "target": "104.20.26.136"
+      },
+      {
+        "source": "example.org",
+        "relation": "resolves_to",
+        "target": "172.66.157.237"
+      },
+      {
+        "source": "172.66.157.237",
+        "relation": "belongs_to",
+        "target": "AS13335"
+      },
+      {
+        "source": "104.20.23.154",
+        "relation": "belongs_to",
+        "target": "AS13335"
+      },
+      {
+        "source": "172.66.147.243",
+        "relation": "belongs_to",
+        "target": "AS13335"
+      },
+      {
+        "source": "104.20.26.136",
+        "relation": "belongs_to",
+        "target": "AS13335"
+      }
+    ],
+    "related_cases": [
+      {
+        "case_id": "CASE-002",
+        "shared": "example.com",
+        "confidence": 0.7
+      }
+    ]
+  },
+  {
+    "case_id": "CASE-002",
+    "entities": [
+      {
+        "type": "domain",
+        "value": "example.com",
+        "risk": 0,
+        "details": {
+          "domain": "example.com",
+          "status": "ok",
+          "A": [
+            "172.66.147.243",
+            "104.20.23.154"
+          ],
+          "AAAA": [
+            "2606:4700:10::6814:179a",
+            "2606:4700:10::ac42:93f3"
+          ],
+          "MX": [
+            "0 ."
+          ],
+          "NS": [
+            "elliott.ns.cloudflare.com.",
+            "hera.ns.cloudflare.com."
+          ]
+        }
+      },
+      {
+        "type": "ip",
+        "value": "104.20.23.154",
+        "risk": 0,
+        "details": {
+          "ip": "104.20.23.154",
+          "status": "ok",
+          "asn": "AS13335",
+          "asn_description": "CLOUDFLARENET - Cloudflare, Inc., US",
+          "country": "US",
+          "network": "104.16.0.0/12",
+          "org": "CLOUDFLARENET"
+        }
+      },
+      {
+        "type": "ip",
+        "value": "172.66.147.243",
+        "risk": 0,
+        "details": {
+          "ip": "172.66.147.243",
+          "status": "ok",
+          "asn": "AS13335",
+          "asn_description": "CLOUDFLARENET - Cloudflare, Inc., US",
+          "country": "US",
+          "network": "172.64.0.0/13",
+          "org": "CLOUDFLARENET"
+        }
+      }
+    ],
+    "relationships": [
+      {
+        "source": "example.com",
+        "relation": "resolves_to",
+        "target": "172.66.147.243"
+      },
+      {
+        "source": "example.com",
+        "relation": "resolves_to",
+        "target": "104.20.23.154"
+      },
+      {
+        "source": "104.20.23.154",
+        "relation": "belongs_to",
+        "target": "AS13335"
+      },
+      {
+        "source": "172.66.147.243",
+        "relation": "belongs_to",
+        "target": "AS13335"
+      },
+      {
+        "source": "CASE-002",
+        "relation": "contains",
+        "target": "1f188c06b85d208dd4497edd447b108642f3fda365c2d5d50bbfcd2b495794e0"
+      }
+    ],
+    "related_cases": [
+      {
+        "case_id": "CASE-001",
+        "shared": "example.com",
+        "confidence": 0.7
+      }
+    ]
+  }
+]
