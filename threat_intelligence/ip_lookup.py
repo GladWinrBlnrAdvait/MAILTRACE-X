@@ -1,9 +1,9 @@
 import ipaddress
 from ipwhois import IPWhois
 from ipwhois.exceptions import IPDefinedError, HTTPLookupError, ASNRegistryError
-from functools import lru_cache
+from threat_intelligence.cache import cached
 
-@lru_cache(maxsize=1024)
+@cached(ttl_seconds=86400)
 def lookup_ip(ip: str) -> dict:
     """Find ASN, organization, country and network for an IP using RDAP."""
     result = {

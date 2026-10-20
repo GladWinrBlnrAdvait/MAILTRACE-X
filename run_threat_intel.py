@@ -20,7 +20,7 @@ for r in results:
 print("\n--- Related cases (final) ---")
 for r in results:
     for rel in get_related_cases(r.case_id):
-        print(f"{r.case_id} <-> {rel.case_id} via {rel.shared} ({rel.confidence})")
+        print(f"{r.case_id} <-> {rel.case_id} via {rel.all_shared} (best: {rel.shared}, {rel.confidence})")
 
 import json, os
 os.makedirs("docs", exist_ok=True)

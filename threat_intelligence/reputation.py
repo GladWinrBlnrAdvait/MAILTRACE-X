@@ -2,19 +2,16 @@ import os
 import ipaddress
 import requests
 
+from threat_intelligence.cache import cached
+
 API_URL = "https://api.abuseipdb.com/api/v2/check"
 
-_cache = {}   # ip -> result, only successful lookups are stored
 
-
+@cached(ttl_seconds=3600)
 def check_ip_reputation(ip: str) -> dict:
     """Ask AbuseIPDB how malicious an IP looks (score 0-100)."""
-    if ip in _cache:
-        return _cache[ip]
-
     result = {"ip": ip, "status": "ok", "abuse_score": 0, "total_reports": 0}
 
-    # Don't waste API calls on invalid or non-public addresses
     try:
         parsed = ipaddress.ip_address(ip)
     except ValueError:
@@ -26,7 +23,7 @@ def check_ip_reputation(ip: str) -> dict:
 
     key = os.environ.get("ABUSEIPDB_KEY")
     if not key:
-        result["status"] = "no_api_key"      # offline mode
+        result["status"] = "no_api_key"
         return result
 
     try:
@@ -40,8 +37,6 @@ def check_ip_reputation(ip: str) -> dict:
         data = response.json()["data"]
         result["abuse_score"] = data.get("abuseConfidenceScore", 0)
         result["total_reports"] = data.get("totalReports", 0)
-        _cache[ip] = result          # cache only successes
     except requests.RequestException:
         result["status"] = "lookup_failed"
-
     return result
