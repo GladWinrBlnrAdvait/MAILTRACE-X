@@ -5,6 +5,7 @@ import networkx as nx
 from correlation.correlator import merge_into, find_related_cases
 from correlation.graph_builder import build_case_graph
 from correlation.models import CorrelatedThreatData
+from correlation.persistence import graph_from_correlation
 
 _master = nx.DiGraph()
 _lock = threading.Lock()   # the API may run several requests at once
@@ -25,3 +26,19 @@ def get_related_cases(case_id: str):
         if case_id not in _master:
             return []
         return find_related_cases(_master, case_id)
+
+
+def load_cases(stored_cases) -> int:
+    """Rebuild the shared graph from previously saved analysis results.
+
+    Call once at server start-up. Each item is a saved result dict that
+    contains a 'correlation' entry. Returns how many cases were loaded.
+    """
+    loaded = 0
+    with _lock:
+        for stored in stored_cases:
+            correlation = (stored or {}).get("correlation")
+            if correlation:
+                merge_into(_master, graph_from_correlation(correlation))
+                loaded += 1
+    return loaded

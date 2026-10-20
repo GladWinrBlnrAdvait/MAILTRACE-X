@@ -6,6 +6,7 @@ from uuid import uuid4
 
 from fastapi import FastAPI, File, HTTPException, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.concurrency import run_in_threadpool
 from fastapi.responses import HTMLResponse
 from fastapi.staticfiles import StaticFiles
 
@@ -14,7 +15,7 @@ from backend.repository import CaseRepository
 from backend.reporting import build_html_report
 from backend.risk import calculate_risk
 from backend.schemas import AnalysisResult, CaseSummary
-from correlation.service import enrich_evidence
+from correlation.service import enrich_evidence, get_related_cases, load_cases
 from evidence.email_parser import parse_email
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -22,6 +23,8 @@ app = FastAPI(title="MAILTRACE-X API", version="1.0.0", description="Explainable
 app.add_middleware(CORSMiddleware, allow_origins=["*"], allow_methods=["*"], allow_headers=["*"])
 app.mount("/dashboard", StaticFiles(directory=ROOT / "dashboard", html=True), name="dashboard")
 repository = CaseRepository(ROOT / "mailtrace.db")
+# Rebuild the correlation graph from saved cases so related-case links survive a restart
+load_cases(repository.get(case["case_id"]) for case in repository.list())
 
 
 @app.get("/api/health")
@@ -47,7 +50,7 @@ async def analyze_email(file: UploadFile = File(...)):
     finally:
         Path(temporary_path).unlink(missing_ok=True)
     detection = detect_phishing(evidence)
-    correlation = enrich_evidence(evidence)
+    correlation = await run_in_threadpool(enrich_evidence, evidence)
     risk = calculate_risk(evidence, detection, correlation)
     result = AnalysisResult(case_id=case_id, created_at=datetime.now(timezone.utc), detection=detection, risk=risk, evidence=asdict(evidence), correlation=correlation.model_dump())
     payload = result.model_dump(mode="json")
@@ -65,6 +68,8 @@ def get_case(case_id: str):
     result = repository.get(case_id)
     if not result:
         raise HTTPException(404, "Case not found.")
+    if result.get("correlation"):   # related cases may have appeared after this case was saved
+        result["correlation"]["related_cases"] = [r.model_dump() for r in get_related_cases(case_id)]
     return result
 
 
