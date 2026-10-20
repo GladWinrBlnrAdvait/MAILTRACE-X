@@ -57,17 +57,30 @@ def extract_features(evidence) -> tuple[dict[str, float], list[str]]:
     return features, reasons
 
 
+def _matched_terms(text: str) -> dict[str, float]:
+    """Expose the lexical evidence behind a baseline prediction."""
+    return {term: 0.34 for term in sorted(SUSPICIOUS_TERMS) if term in text}
+
+
 def detect_phishing(evidence) -> DetectionResult:
     """Return an explainable baseline classification for a parsed email."""
     features, reasons = extract_features(evidence)
+    text = " ".join(filter(None, [evidence.metadata.subject, evidence.body.text, evidence.body.html])).lower()
+    contributions = _matched_terms(text)
     trained_model = Path(__file__).resolve().parents[1] / "ml" / "models" / "phishing_baseline.joblib"
     model_name = "explainable-logistic-baseline-v1"
     if trained_model.exists():
         # The training script writes a Pipeline with predict_proba. Loading is
         # optional so production users can deploy only the lightweight baseline.
         import joblib
-        text = " ".join(filter(None, [evidence.metadata.subject, evidence.body.text, evidence.body.html]))
-        probability = round(float(joblib.load(trained_model).predict_proba([text])[0][1]), 4)
+        trained_text = " ".join(filter(None, [evidence.metadata.subject, evidence.body.text, evidence.body.html]))
+        pipeline = joblib.load(trained_model)
+        probability = round(float(pipeline.predict_proba([trained_text])[0][1]), 4)
+        vectorizer, classifier = pipeline.named_steps["tfidf"], pipeline.named_steps["classifier"]
+        row = vectorizer.transform([trained_text])
+        names = vectorizer.get_feature_names_out()
+        contributions = {names[index]: round(float(row[0, index] * classifier.coef_[0, index]), 4) for index in row.indices}
+        contributions = dict(sorted(contributions.items(), key=lambda item: abs(item[1]), reverse=True)[:8])
         model_name = "tfidf-logistic-regression-v1"
         reasons.insert(0, "Dataset-trained NLP model evaluated the email content")
     else:
@@ -93,4 +106,5 @@ def detect_phishing(evidence) -> DetectionResult:
         model=model_name,
         features=features,
         reasons=reasons,
+        term_contributions=contributions,
     )

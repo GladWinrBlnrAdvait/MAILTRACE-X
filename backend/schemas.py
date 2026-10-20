@@ -10,6 +10,7 @@ class DetectionResult(BaseModel):
     model: str
     features: dict[str, float]
     reasons: list[str] = []
+    term_contributions: dict[str, float] = {}
 
 
 class RiskResult(BaseModel):
