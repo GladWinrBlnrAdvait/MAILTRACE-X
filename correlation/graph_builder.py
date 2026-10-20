@@ -2,6 +2,7 @@ import networkx as nx
 from correlation.models import CorrelatedThreatData, Entity, Relationship
 from threat_intelligence.dns_lookup import resolve_domain
 from threat_intelligence.ip_lookup import lookup_ip
+from threat_intelligence.reputation import check_ip_reputation
 
 
 def build_case_graph(evidence) -> tuple[nx.DiGraph, CorrelatedThreatData]:
@@ -33,15 +34,19 @@ def build_case_graph(evidence) -> tuple[nx.DiGraph, CorrelatedThreatData]:
 
     # IPs -> RDAP -> ASN
     for ip in sorted(all_ips):
-        info = lookup_ip(ip)
-        G.add_node(ip, type="ip")
-        entities.append(Entity(type="ip", value=ip, details=info))
+                info = lookup_ip(ip)
+                rep = check_ip_reputation(ip)
+                G.add_node(ip, type="ip", risk=rep["abuse_score"])
+                entities.append(Entity(
+                    type="ip", value=ip, risk=rep["abuse_score"],
+                    details={**info, "reputation": rep},
+                ))
 
-        if ip in email_ips:
+    if ip in email_ips:
             link(case_id, "contains", ip)
 
-        asn = info.get("asn")
-        if asn:
+    asn = info.get("asn")
+    if asn:
             G.add_node(asn, type="asn")
             link(ip, "belongs_to", asn)
             if asn not in seen_asns:
