@@ -15,6 +15,7 @@ from backend.repository import CaseRepository
 from backend.reporting import build_html_report
 from backend.risk import calculate_risk
 from backend.schemas import AnalysisResult, CaseSummary
+from correlation.export import export_graph
 from correlation.service import enrich_evidence, get_related_cases, load_cases
 from evidence.email_parser import parse_email
 
@@ -71,6 +72,15 @@ def get_case(case_id: str):
     if result.get("correlation"):   # related cases may have appeared after this case was saved
         result["correlation"]["related_cases"] = [r.model_dump() for r in get_related_cases(case_id)]
     return result
+
+
+@app.get("/api/case/{case_id}/graph")
+def get_case_graph(case_id: str):
+    """Nodes-and-edges JSON of a case's evidence graph, for the dashboard."""
+    result = get_case(case_id)   # reuses the 404 check and the refreshed related cases
+    if not result.get("correlation"):
+        raise HTTPException(404, "No correlation data for this case.")
+    return export_graph(result["correlation"])
 
 
 @app.get("/api/report/{case_id}", response_class=HTMLResponse)
