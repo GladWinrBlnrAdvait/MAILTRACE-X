@@ -10,19 +10,19 @@
           "domain": "example.com",
           "status": "ok",
           "A": [
-            "172.66.147.243",
-            "104.20.23.154"
+            "104.20.23.154",
+            "172.66.147.243"
           ],
           "AAAA": [
-            "2606:4700:10::6814:179a",
-            "2606:4700:10::ac42:93f3"
+            "2606:4700:10::ac42:93f3",
+            "2606:4700:10::6814:179a"
           ],
           "MX": [
             "0 ."
           ],
           "NS": [
-            "hera.ns.cloudflare.com.",
-            "elliott.ns.cloudflare.com."
+            "elliott.ns.cloudflare.com.",
+            "hera.ns.cloudflare.com."
           ]
         },
         "risk_reasons": []
@@ -39,8 +39,8 @@
             "104.20.26.136"
           ],
           "AAAA": [
-            "2606:4700:10::ac42:9ded",
-            "2606:4700:10::6814:1a88"
+            "2606:4700:10::6814:1a88",
+            "2606:4700:10::ac42:9ded"
           ],
           "MX": [
             "0 ."
@@ -265,19 +265,19 @@
           "domain": "example.com",
           "status": "ok",
           "A": [
-            "172.66.147.243",
-            "104.20.23.154"
+            "104.20.23.154",
+            "172.66.147.243"
           ],
           "AAAA": [
-            "2606:4700:10::6814:179a",
-            "2606:4700:10::ac42:93f3"
+            "2606:4700:10::ac42:93f3",
+            "2606:4700:10::6814:179a"
           ],
           "MX": [
             "0 ."
           ],
           "NS": [
-            "hera.ns.cloudflare.com.",
-            "elliott.ns.cloudflare.com."
+            "elliott.ns.cloudflare.com.",
+            "hera.ns.cloudflare.com."
           ]
         },
         "risk_reasons": []
@@ -340,7 +340,15 @@
         "details": {
           "filename": "invoice.txt",
           "mime_type": "text/plain",
-          "size_bytes": 47
+          "size_bytes": 47,
+          "reputation": {
+            "sha256": "1f188c06b85d208dd4497edd447b108642f3fda365c2d5d50bbfcd2b495794e0",
+            "status": "ok",
+            "found": false,
+            "signature": null,
+            "file_type": null,
+            "tags": []
+          }
         },
         "risk_reasons": []
       }

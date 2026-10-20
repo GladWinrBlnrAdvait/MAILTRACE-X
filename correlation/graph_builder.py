@@ -4,8 +4,9 @@ from concurrent.futures import ThreadPoolExecutor, TimeoutError as LookupTimeout
 import networkx as nx
 
 from correlation.models import CorrelatedThreatData, Entity, Relationship
-from correlation.risk_rules import score_domain, score_ip
+from correlation.risk_rules import score_domain, score_hash, score_ip
 from threat_intelligence.dns_lookup import resolve_domain
+from threat_intelligence.hash_reputation import check_hash_reputation
 from threat_intelligence.ip_lookup import lookup_ip
 from threat_intelligence.reputation import check_ip_reputation
 
@@ -19,6 +20,11 @@ def _dns_failed(domain: str, status: str) -> dict:
 def _ip_failed(ip: str, status: str) -> dict:
     return {"ip": ip, "status": status, "asn": None, "asn_description": None,
             "country": None, "network": None, "org": None}
+
+
+def _hash_failed(sha256: str, status: str) -> dict:
+    return {"sha256": sha256, "status": status, "found": False,
+            "signature": None, "file_type": None, "tags": []}
 
 
 def _run_parallel(func, items, deadline, on_failure, workers=8):
@@ -94,15 +100,20 @@ def build_case_graph(evidence, time_budget: float = CASE_TIME_BUDGET):
                 entities.append(Entity(type="asn", value=asn,
                                        details={"description": info.get("asn_description")}))
 
-    # 3. Attachments -> hashes
-    for att in evidence.attachments:
-        if att.sha256:
-            G.add_node(att.sha256, type="hash")
-            link(case_id, "contains", att.sha256)
-            entities.append(Entity(type="hash", value=att.sha256, details={
-                "filename": att.filename,
-                "mime_type": getattr(att, "mime_type", None),
-                "size_bytes": getattr(att, "size_bytes", None)}))
+    # 3. Attachments -> hashes (reputation lookups in parallel)
+    attachments = {a.sha256: a for a in evidence.attachments if a.sha256}
+    hash_results = _run_parallel(check_hash_reputation, sorted(attachments), deadline,
+                                 lambda h, status: _hash_failed(h, status))
+    for sha256, att in attachments.items():
+        rep = hash_results[sha256]
+        risk, reasons = score_hash(rep)
+        G.add_node(sha256, type="hash", risk=risk)
+        link(case_id, "contains", sha256)
+        entities.append(Entity(type="hash", value=sha256, risk=risk, risk_reasons=reasons,
+                               details={"filename": att.filename,
+                                        "mime_type": getattr(att, "mime_type", None),
+                                        "size_bytes": getattr(att, "size_bytes", None),
+                                        "reputation": rep}))
 
     output = CorrelatedThreatData(case_id=case_id, entities=entities,
                                   relationships=relationships)
