@@ -21,10 +21,11 @@
             "0 ."
           ],
           "NS": [
-            "elliott.ns.cloudflare.com.",
-            "hera.ns.cloudflare.com."
+            "hera.ns.cloudflare.com.",
+            "elliott.ns.cloudflare.com."
           ]
-        }
+        },
+        "risk_reasons": []
       },
       {
         "type": "domain",
@@ -34,12 +35,12 @@
           "domain": "example.org",
           "status": "ok",
           "A": [
-            "104.20.26.136",
-            "172.66.157.237"
+            "172.66.157.237",
+            "104.20.26.136"
           ],
           "AAAA": [
-            "2606:4700:10::6814:1a88",
-            "2606:4700:10::ac42:9ded"
+            "2606:4700:10::ac42:9ded",
+            "2606:4700:10::6814:1a88"
           ],
           "MX": [
             "0 ."
@@ -48,7 +49,8 @@
             "katelyn.ns.cloudflare.com.",
             "mitch.ns.cloudflare.com."
           ]
-        }
+        },
+        "risk_reasons": []
       },
       {
         "type": "domain",
@@ -61,7 +63,8 @@
           "AAAA": [],
           "MX": [],
           "NS": []
-        }
+        },
+        "risk_reasons": []
       },
       {
         "type": "ip",
@@ -74,8 +77,15 @@
           "asn_description": "CLOUDFLARENET - Cloudflare, Inc., US",
           "country": "US",
           "network": "104.16.0.0/12",
-          "org": "CLOUDFLARENET"
-        }
+          "org": "CLOUDFLARENET",
+          "reputation": {
+            "ip": "104.20.23.154",
+            "status": "ok",
+            "abuse_score": 0,
+            "total_reports": 1
+          }
+        },
+        "risk_reasons": []
       },
       {
         "type": "asn",
@@ -83,7 +93,8 @@
         "risk": 0,
         "details": {
           "description": "CLOUDFLARENET - Cloudflare, Inc., US"
-        }
+        },
+        "risk_reasons": []
       },
       {
         "type": "ip",
@@ -96,8 +107,15 @@
           "asn_description": "CLOUDFLARENET - Cloudflare, Inc., US",
           "country": "US",
           "network": "104.16.0.0/12",
-          "org": "CLOUDFLARENET"
-        }
+          "org": "CLOUDFLARENET",
+          "reputation": {
+            "ip": "104.20.26.136",
+            "status": "ok",
+            "abuse_score": 0,
+            "total_reports": 0
+          }
+        },
+        "risk_reasons": []
       },
       {
         "type": "ip",
@@ -110,8 +128,15 @@
           "asn_description": "CLOUDFLARENET - Cloudflare, Inc., US",
           "country": "US",
           "network": "172.64.0.0/13",
-          "org": "CLOUDFLARENET"
-        }
+          "org": "CLOUDFLARENET",
+          "reputation": {
+            "ip": "172.66.147.243",
+            "status": "ok",
+            "abuse_score": 0,
+            "total_reports": 2
+          }
+        },
+        "risk_reasons": []
       },
       {
         "type": "ip",
@@ -124,8 +149,15 @@
           "asn_description": "CLOUDFLARENET - Cloudflare, Inc., US",
           "country": "US",
           "network": "172.64.0.0/13",
-          "org": "CLOUDFLARENET"
-        }
+          "org": "CLOUDFLARENET",
+          "reputation": {
+            "ip": "172.66.157.237",
+            "status": "ok",
+            "abuse_score": 0,
+            "total_reports": 0
+          }
+        },
+        "risk_reasons": []
       },
       {
         "type": "ip",
@@ -138,8 +170,15 @@
           "asn_description": null,
           "country": null,
           "network": null,
-          "org": null
-        }
+          "org": null,
+          "reputation": {
+            "ip": "192.0.2.20",
+            "status": "private_or_reserved",
+            "abuse_score": 0,
+            "total_reports": 0
+          }
+        },
+        "risk_reasons": []
       }
     ],
     "relationships": [
@@ -237,10 +276,11 @@
             "0 ."
           ],
           "NS": [
-            "elliott.ns.cloudflare.com.",
-            "hera.ns.cloudflare.com."
+            "hera.ns.cloudflare.com.",
+            "elliott.ns.cloudflare.com."
           ]
-        }
+        },
+        "risk_reasons": []
       },
       {
         "type": "ip",
@@ -253,8 +293,15 @@
           "asn_description": "CLOUDFLARENET - Cloudflare, Inc., US",
           "country": "US",
           "network": "104.16.0.0/12",
-          "org": "CLOUDFLARENET"
-        }
+          "org": "CLOUDFLARENET",
+          "reputation": {
+            "ip": "104.20.23.154",
+            "status": "ok",
+            "abuse_score": 0,
+            "total_reports": 1
+          }
+        },
+        "risk_reasons": []
       },
       {
         "type": "asn",
@@ -262,7 +309,8 @@
         "risk": 0,
         "details": {
           "description": "CLOUDFLARENET - Cloudflare, Inc., US"
-        }
+        },
+        "risk_reasons": []
       },
       {
         "type": "ip",
@@ -275,8 +323,15 @@
           "asn_description": "CLOUDFLARENET - Cloudflare, Inc., US",
           "country": "US",
           "network": "172.64.0.0/13",
-          "org": "CLOUDFLARENET"
-        }
+          "org": "CLOUDFLARENET",
+          "reputation": {
+            "ip": "172.66.147.243",
+            "status": "ok",
+            "abuse_score": 0,
+            "total_reports": 2
+          }
+        },
+        "risk_reasons": []
       },
       {
         "type": "hash",
@@ -286,7 +341,8 @@
           "filename": "invoice.txt",
           "mime_type": "text/plain",
           "size_bytes": 47
-        }
+        },
+        "risk_reasons": []
       }
     ],
     "relationships": [

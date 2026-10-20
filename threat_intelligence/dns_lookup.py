@@ -1,11 +1,11 @@
 import dns.resolver
 import dns.exception
-from functools import lru_cache
+from threat_intelligence.cache import cached
 
 
 RECORD_TYPES = ["A", "AAAA", "MX", "NS"]
 
-@lru_cache(maxsize=1024)
+@cached(ttl_seconds=3600)
 def resolve_domain(domain: str) -> dict:
     """Look up DNS records for a domain. Never crashes; always returns a dict."""
     result = {"domain": domain, "status": "ok", "A": [], "AAAA": [], "MX": [], "NS": []}
