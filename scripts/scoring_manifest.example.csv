@@ -1,0 +1,4 @@
+path,label
+../samples/sample.eml,phishing
+../samples/normal_email.eml,legitimate
+../samples/attachment_test.eml,legitimate

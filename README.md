@@ -35,7 +35,7 @@ pip install -r requirements.txt
 uvicorn backend.main:app --reload
 ```
 
-Set `MAILTRACE_API_KEY` before deploying (the local prototype uses `mailtrace-dev-key`), then open [http://127.0.0.1:8000/dashboard/](http://127.0.0.1:8000/dashboard/) and sign in with that key. Interactive API documentation is at [http://127.0.0.1:8000/docs](http://127.0.0.1:8000/docs). Set `MAILTRACE_ALLOWED_ORIGINS` to a comma-separated allowlist for a separate frontend origin.
+Set a unique API key before starting the service. No built-in/default key is accepted. For example, generate one with `python -c "import secrets; print(secrets.token_urlsafe(32))"`, then set `MAILTRACE_API_KEY` in your environment. For production, also set `MAILTRACE_ENV=production`; startup will fail if the key is missing or equals the old development default. Open [http://127.0.0.1:8000/dashboard/](http://127.0.0.1:8000/dashboard/) and sign in with the configured key. Interactive API documentation is at [http://127.0.0.1:8000/docs](http://127.0.0.1:8000/docs). Set `MAILTRACE_ALLOWED_ORIGINS` to a comma-separated allowlist for a separate frontend origin.
 
 To run the original command-line evidence pipeline:
 
@@ -54,7 +54,7 @@ python main.py samples/sample.eml
 | `GET` | `/api/report/{case_id}` | Open a standalone HTML investigation report |
 | `GET` | `/api/report/{case_id}/pdf` | Download a structured-evidence PDF report |
 
-All case endpoints require `X-API-Key` (or `api_key` for an authenticated report download). The API rejects non-EML files, empty inputs, and uploads over 10 MB; component failures return stable error codes. Cases are stored locally in `mailtrace.db` (ignored by Git).
+All case endpoints require the `X-API-Key` header. API keys in query parameters are not supported; dashboard report downloads use authenticated fetch requests. The API rejects non-EML files, empty inputs, and uploads over 10 MB; component failures return stable error codes. Cases are stored locally in `mailtrace.db` (ignored by Git).
 
 ## Detection and risk methodology
 
@@ -75,6 +75,14 @@ The training command uses a stratified 80/20 held-out split and writes `ml/model
 ```bash
 python -m unittest discover -s tests -v
 ```
+
+To evaluate score separation on a larger labelled corpus, create a CSV with `path,label` columns (`label` must be `phishing` or `legitimate`) and run:
+
+```bash
+python scripts/evaluate_scoring.py path/to/manifest.csv --output scoring-evaluation.json
+```
+
+An example manifest for the three bundled samples is at `scripts/scoring_manifest.example.csv`. It is only a smoke test, not a meaningful accuracy evaluation. For paper results, use a larger representative corpus, keep near-duplicates out of train/test splits, and report precision, recall, F1, score distributions, and saturation at 100.
 
 The tests cover parsing, header/authentication signals, IOC extraction, attachments, the end-to-end evidence pipeline, and Aditya’s detection/risk integration.
 
@@ -100,3 +108,10 @@ samples/                  Safe demonstration EML inputs
 ## License and contributions
 
 Choose and add a license before external distribution. Keep module boundaries intact, add tests with each change, and never commit real victim email content or credentials.
+
+
+### Offline test environments
+
+The RDAP/IP lookup integration uses `ipwhois`. If that optional dependency is not installed, MAILTRACE-X remains importable and reports `lookup_unavailable` for public IP enrichment rather than failing to start. Install all entries in `requirements.txt` to enable RDAP enrichment.
+
+For a dependency-light security smoke test, run `python -m unittest tests.test_dashboard_static -v`. This checks the dashboard source for escaping and query-string API-key regressions, but it is not a substitute for the optional real-browser test. To run that test, install `requirements-dev.txt` and run `playwright install chromium`.

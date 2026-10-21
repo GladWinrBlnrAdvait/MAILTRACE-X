@@ -1,6 +1,4 @@
 import ipaddress
-from ipwhois import IPWhois
-from ipwhois.exceptions import IPDefinedError, HTTPLookupError, ASNRegistryError
 from threat_intelligence.cache import cached
 
 @cached(ttl_seconds=86400)
@@ -28,7 +26,15 @@ def lookup_ip(ip: str) -> dict:
         result["status"] = "private_or_reserved"
         return result
 
-    # Step 3: ask RDAP
+    # Step 3: ask RDAP. Keep the core app importable when the optional RDAP
+    # dependency is unavailable (for example, in offline test environments).
+    try:
+        from ipwhois import IPWhois
+        from ipwhois.exceptions import IPDefinedError, HTTPLookupError, ASNRegistryError
+    except ImportError:
+        result["status"] = "lookup_unavailable"
+        return result
+
     try:
         data = IPWhois(ip).lookup_rdap(depth=1)
         result["asn"] = f"AS{data.get('asn')}" if data.get("asn") else None

@@ -1,5 +1,8 @@
+import os
 import unittest
 from unittest.mock import patch
+
+os.environ["MAILTRACE_API_KEY"] = "test-secret-key"
 
 from fastapi.testclient import TestClient
 
@@ -8,13 +11,20 @@ from correlation.models import CorrelatedThreatData
 
 
 class TestAPI(unittest.TestCase):
-    headers = {"X-API-Key": "mailtrace-dev-key"}
+    headers = {"X-API-Key": "test-secret-key"}
 
     def setUp(self):
         self.client = TestClient(app)
 
-    def test_authentication_is_required(self):
+    def test_authentication_is_required_and_query_keys_are_rejected(self):
         self.assertEqual(self.client.get("/api/cases").status_code, 401)
+        self.assertEqual(self.client.get("/api/cases", params={"api_key": "test-secret-key"}).status_code, 401)
+
+    def test_missing_server_key_fails_closed(self):
+        with patch.dict(os.environ, {}, clear=True):
+            response = self.client.get("/api/cases")
+        self.assertEqual(response.status_code, 503)
+        self.assertEqual(response.json()["detail"]["code"], "api_key_not_configured")
 
     def test_all_case_endpoints(self):
         with patch("backend.main.enrich_evidence", side_effect=lambda evidence: CorrelatedThreatData(case_id=evidence.case_id)):

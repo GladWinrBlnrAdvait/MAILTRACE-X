@@ -33,7 +33,7 @@ function render(result) {
   document.querySelector('#confidence').textContent = `${Math.round(result.risk.confidence * 100)}%`;
   document.querySelector('#reasons').innerHTML = result.risk.reasons.map(r => `<li>${escapeHtml(r)}</li>`).join('');
   const auth = result.evidence.authentication;
-  document.querySelector('#auth').innerHTML = Object.entries(auth).map(([key, value]) => `<div>${key.toUpperCase()}<b>${escapeHtml(value).toUpperCase()}</b></div>`).join('');
+  document.querySelector('#auth').innerHTML = Object.entries(auth).map(([key, value]) => `<div>${escapeHtml(key).toUpperCase()}<b>${escapeHtml(value).toUpperCase()}</b></div>`).join('');
   const iocs = Object.values(result.evidence.iocs).flat();
   document.querySelector('#iocs').innerHTML = iocs.length ? iocs.map(i => `<code>${escapeHtml(i)}</code>`).join('') : '<p>No IOCs extracted.</p>';
   const related = result.correlation?.related_cases?.length || 0;
@@ -43,9 +43,40 @@ function render(result) {
   document.querySelector('#attachments').innerHTML = attachments.length ? attachments.map(a => `<p><b>${escapeHtml(a.filename)}</b><br><small>${escapeHtml(a.mime_type)} · SHA-256 ${escapeHtml(a.sha256)}</small></p>`).join('') : '<p>No attachments found. No sandbox execution was performed.</p>';
   const terms = result.detection.term_contributions || {};
   document.querySelector('#terms').innerHTML = Object.keys(terms).length ? Object.entries(terms).map(([term, weight]) => `<code>${escapeHtml(term)} ${Number(weight) >= 0 ? '+' : ''}${Number(weight).toFixed(2)}</code>`).join('') : '<p>No lexical contributions available.</p>';
-  const token = encodeURIComponent(apiKey);
-  document.querySelector('#report-link').href = `/api/report/${result.case_id}?api_key=${token}`;
-  document.querySelector('#pdf-link').href = `/api/report/${result.case_id}/pdf?api_key=${token}`;
+  const reportLink = document.querySelector('#report-link');
+  const pdfLink = document.querySelector('#pdf-link');
+  reportLink.href = `/api/report/${encodeURIComponent(result.case_id)}`;
+  pdfLink.href = `/api/report/${encodeURIComponent(result.case_id)}/pdf`;
+  reportLink.onclick = event => { event.preventDefault(); openAuthenticatedReport(reportLink.href); };
+  pdfLink.onclick = event => { event.preventDefault(); downloadAuthenticatedReport(pdfLink.href, `${result.case_id}-report.pdf`); };
   document.querySelector('#results').scrollIntoView({behavior:'smooth', block:'start'});
 }
 function escapeHtml(value) { const d = document.createElement('div'); d.textContent = value; return d.innerHTML; }
+
+
+async function openAuthenticatedReport(url) {
+  const reportWindow = window.open('about:blank', '_blank');
+  if (!reportWindow) { message.textContent = 'Allow pop-ups to open the report.'; return; }
+  try {
+    const response = await fetch(url, {headers: {'X-API-Key': apiKey}});
+    if (!response.ok) throw new Error('Could not open report. Check your API key.');
+    const objectUrl = URL.createObjectURL(await response.blob());
+    reportWindow.opener = null;
+    reportWindow.location.href = objectUrl;
+  } catch (error) { reportWindow.close(); message.textContent = error.message; }
+}
+
+async function downloadAuthenticatedReport(url, filename) {
+  try {
+    const response = await fetch(url, {headers: {'X-API-Key': apiKey}});
+    if (!response.ok) throw new Error('Could not download report. Check your API key.');
+    const objectUrl = URL.createObjectURL(await response.blob());
+    const link = document.createElement('a');
+    link.href = objectUrl;
+    link.download = filename;
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+    URL.revokeObjectURL(objectUrl);
+  } catch (error) { message.textContent = error.message; }
+}

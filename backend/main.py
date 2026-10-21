@@ -6,7 +6,7 @@ from uuid import uuid4
 import os
 import secrets
 
-from fastapi import Depends, FastAPI, File, Header, HTTPException, Query, UploadFile
+from fastapi import Depends, FastAPI, File, Header, HTTPException, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.concurrency import run_in_threadpool
 from fastapi.responses import HTMLResponse
@@ -22,6 +22,13 @@ from correlation.service import enrich_evidence, get_related_cases, load_cases
 from evidence.email_parser import parse_email
 
 ROOT = Path(__file__).resolve().parents[1]
+# Production deployments must provide a private key explicitly. Local development
+# also uses MAILTRACE_API_KEY, but may choose any value.
+if os.getenv("MAILTRACE_ENV", "").lower() == "production":
+    _startup_key = os.getenv("MAILTRACE_API_KEY", "").strip()
+    if not _startup_key or _startup_key == "mailtrace-dev-key":
+        raise RuntimeError("Production requires MAILTRACE_API_KEY to be set to a non-default secret.")
+
 app = FastAPI(title="MAILTRACE-X API", version="1.0.0", description="Explainable phishing investigation platform")
 allowed_origins = [origin.strip() for origin in os.getenv("MAILTRACE_ALLOWED_ORIGINS", "http://127.0.0.1:8000,http://localhost:8000").split(",") if origin.strip()]
 app.add_middleware(CORSMiddleware, allow_origins=allowed_origins, allow_methods=["GET", "POST"], allow_headers=["X-API-Key", "Content-Type"])
@@ -35,17 +42,13 @@ def api_error(status: int, code: str, message: str):
     raise HTTPException(status, {"code": code, "message": message})
 
 
-def require_api_key(x_api_key: str | None = Query(default=None, alias="api_key"), header_key: str | None = Header(default=None, alias="X-API-Key")):
-    """Protect case data with an environment-managed API key.
-
-    ``MAILTRACE_API_KEY`` must be set in deployed environments. The explicit
-    development value keeps the sample usable locally and is never suitable for
-    a public deployment.
-    """
-    configured = os.getenv("MAILTRACE_API_KEY", "mailtrace-dev-key")
-    supplied = header_key or x_api_key
-    if not supplied or not secrets.compare_digest(supplied, configured):
-        api_error(401, "authentication_required", "A valid X-API-Key is required.")
+def require_api_key(header_key: str | None = Header(default=None, alias="X-API-Key")):
+    """Authenticate requests using the X-API-Key header only."""
+    configured = os.getenv("MAILTRACE_API_KEY", "").strip()
+    if not configured:
+        api_error(503, "api_key_not_configured", "Set MAILTRACE_API_KEY before using protected endpoints.")
+    if not header_key or not secrets.compare_digest(header_key, configured):
+        api_error(401, "authentication_required", "A valid X-API-Key header is required.")
 
 
 @app.get("/api/health")
