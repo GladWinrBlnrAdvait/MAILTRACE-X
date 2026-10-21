@@ -88,6 +88,70 @@ tests/                    Regression and pipeline validation
 samples/                  Safe demonstration EML inputs
 ```
 
+## Static attachment analysis
+
+`evidence/attachment_static.py` inspects attachment bytes in memory (nothing is executed, opened or extracted) and emits `ATT-xxx` signals into `evidence_signals`:
+
+| Signal | Meaning |
+|--------|---------|
+| ATT-001 | File content does not match its extension |
+| ATT-002 | Double extension or right-to-left-override filename |
+| ATT-003 | High-risk file type (executable, script, disk image) |
+| ATT-004 / ATT-005 | Office macros present / macro runs automatically (`oletools`) |
+| ATT-006 / ATT-007 / ATT-008 | PDF JavaScript / auto-open action / `/Launch` action |
+| ATT-009 / ATT-010 | Archive contains executables / archive is password-protected |
+
+Limitations: PDF checks look for name tokens (raw and Flate-decoded), so heavily obfuscated PDFs can evade them; macro detail needs `oletools`; only ZIP archives are listed.
+
+## Sample corpus
+
+`samples/generate_corpus.py` builds safe, synthetic demo emails (reserved `example.*` domains, documentation IP ranges, harmless stand-in attachments):
+
+```bash
+python samples/generate_corpus.py --vba-bin path/to/vbaProject.bin
+```
+
+`campaign_a_double_extension.eml` and `campaign_b_followup.eml` share `billing-update.example.org` for the related-case demo. `phishing_brand_spoof.eml` exercises the header checks, the Received timeline, a defanged link and an IPv6 hop (regenerate just it with `--only phishing_brand_spoof`). Some antivirus products may flag the macro sample; it only carries a benign example macro.
+
+## Header forensics and Received timeline
+
+| Signal | Meaning |
+|--------|---------|
+| HDR-001 / HDR-002 | From vs Reply-To / Return-Path domain mismatch |
+| HDR-003 | Display name shows a different email address or domain than the real sender |
+| HDR-004 | Display name claims a known brand the sender domain does not own (small heuristic list) |
+| HDR-005 | Message-ID domain unrelated to the From domain (low) |
+| HDR-006 | Message-ID header missing (low) |
+| HDR-007 | Received timestamps go backwards by more than 5 minutes (low) |
+| PARSE-001 | MIME nesting too deep to analyze fully (possible filter evasion) |
+
+`evidence/received_chain.py` turns the Received headers into an ordered hop list (oldest first: sending host, IP, receiving host, protocol, timestamp, delay) in `received_hops`, plus a best-effort `origin_ip` (first non-internal IP). Headers added by the sender's own system can be forged, so only hops added by servers you trust are reliable. HDR-004 and HDR-005 can fire on legitimate third-party senders (mailing services), so treat them as hints.
+
+## IOC extraction notes
+
+Defanged indicators (`hxxps://`, `[.]`, `[@]`, `(dot)`) are recognized and returned in normal form. IPv4 and IPv6 are extracted; loopback, private, link-local, multicast and reserved addresses are filtered out of `iocs.ips` (they stay visible in `received_hops`). Documentation ranges (192.0.2.0/24, 198.51.100.0/24, 203.0.113.0/24, 2001:db8::/32) are deliberately kept so demo data works.
+
+## Robustness
+
+Malformed emails, odd encodings, missing headers and extreme MIME nesting are covered by `tests/test_robustness.py`. Two quadratic-time regexes (email extraction and PDF stream scanning) that hostile input could use to hang the server were replaced with bounded, linear-time versions; the tests include speed limits.
+
+## Optional VirusTotal enrichment (hash reputation + sandbox behaviour)
+
+`evidence/sandbox.py` looks up each attachment's SHA-256 on VirusTotal. **Only the hash is sent; files are never uploaded or executed.** It is OFF unless both variables are set:
+
+```powershell
+$env:MAILTRACE_SANDBOX_PROVIDER = "virustotal"
+$env:VT_API_KEY = "<your key>"      # never commit this
+```
+
+| Signal | Meaning |
+|--------|---------|
+| SBX-001 | Antivirus engines flag the attachment (>=10 high, 3-9 medium, 1-2 low) |
+| SBX-002 | At least half of the sandboxes returned a non-clean verdict (medium) |
+| SBX-003 | Sandbox observed MITRE ATT&CK techniques (informational) |
+
+Notes: free tier is 4 requests/minute, so a built-in limiter returns `rate_limited` instead of blocking; a file VirusTotal has never seen returns `not_found` (neutral); any failure (no key, timeout, 403, 429) is non-fatal. Sandbox text is untrusted, so the report template must HTML-escape it. Sandbox network traffic is intentionally not turned into IOCs. Thresholds are heuristics, not validated. Uploading unknown files for fresh analysis is not implemented.
+
 ## Safety notes
 
 - Treat email attachments as untrusted. MAILTRACE-X calculates metadata and hashes; it does not execute them.

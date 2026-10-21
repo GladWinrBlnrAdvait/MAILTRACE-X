@@ -5,7 +5,9 @@ from email.utils import getaddresses
 from evidence.models import EmailEvidence, EmailMetadata, EmailBody
 from evidence.ioc_extractor import extract_iocs
 from evidence.attachment_analyzer import analyze_attachments
+from evidence.sandbox import enrich_attachments
 from evidence.header_analyzer import analyze_headers
+from evidence.received_chain import analyze_received_chain, parse_received_chain
 from evidence.authentication import analyze_authentication
 from evidence.signal_engine import generate_authentication_signals
 
@@ -20,7 +22,24 @@ def parse_email(file_path: str, case_id: str) -> EmailEvidence:
     # -------------------------------------------------
 
     with open(file_path, "rb") as file:
-        message = BytesParser(policy=policy.default).parse(file)
+        raw_email = file.read()
+
+    too_deep = False
+
+    try:
+        message = BytesParser(policy=policy.default).parsebytes(raw_email)
+    except RecursionError:
+        # Pathologically nested MIME: keep the headers, skip the content
+        message = BytesParser(policy=policy.default).parsebytes(
+            raw_email, headersonly=True
+        )
+        too_deep = True
+
+    try:
+        parts = list(message.walk())
+    except RecursionError:
+        parts = []
+        too_deep = True
 
     # -------------------------------------------------
     # 2. Extract metadata
@@ -51,6 +70,8 @@ def parse_email(file_path: str, case_id: str) -> EmailEvidence:
 
     received_headers = message.get_all("Received", [])
 
+    received_hops, origin_ip = parse_received_chain(received_headers)
+
     # -------------------------------------------------
     # 4. Extract body
     # -------------------------------------------------
@@ -60,7 +81,7 @@ def parse_email(file_path: str, case_id: str) -> EmailEvidence:
 
     if message.is_multipart():
 
-        for part in message.walk():
+        for part in parts:
 
             content_type = part.get_content_type()
             disposition = part.get_content_disposition()
@@ -123,7 +144,7 @@ def parse_email(file_path: str, case_id: str) -> EmailEvidence:
     # 6. Attachment Analysis
     # -------------------------------------------------
 
-    attachments = analyze_attachments(message)
+    attachments = analyze_attachments(message, parts)
 
     # -------------------------------------------------
     # 7. Authentication Analysis
@@ -145,9 +166,33 @@ def parse_email(file_path: str, case_id: str) -> EmailEvidence:
         authentication
     )
 
+    # Optional VirusTotal hash lookup (off unless explicitly enabled)
+    enrich_attachments(attachments)
+
+    attachment_signals = [
+        signal
+        for attachment in attachments
+        for signal in attachment.signals
+    ]
+
+    parser_signals = []
+
+    if too_deep:
+        parser_signals.append({
+            "signal_id": "PARSE-001",
+            "category": "parser",
+            "severity": "medium",
+            "description": "MIME structure is too deeply nested to analyze "
+                           "fully (possible filter-evasion attempt)",
+            "evidence": {}
+        })
+
     evidence_signals = (
         header_signals
+        + analyze_received_chain(received_hops)
         + authentication_signals
+        + attachment_signals
+        + parser_signals
     )
 
     # -------------------------------------------------
@@ -162,7 +207,9 @@ def parse_email(file_path: str, case_id: str) -> EmailEvidence:
         iocs=iocs,
         attachments=attachments,
         authentication=authentication,
-        evidence_signals=evidence_signals
+        evidence_signals=evidence_signals,
+        received_hops=received_hops,
+        origin_ip=origin_ip
     )
 
     return evidence

@@ -1,0 +1,37 @@
+From: "Collections" <ar@accounts-desk.example.org>
+To: advait@example.net
+Subject: FINAL NOTICE - Invoice 20931
+Date: Fri, 16 Oct 2026 09:30:00 +0530
+Message-ID: <final-20931@accounts-desk.example.org>
+Reply-To: ar@accounts-desk.example.org
+Return-Path: <bounce@accounts-desk.example.org>
+Authentication-Results: mx.example.net; spf=fail
+ smtp.mailfrom=accounts-desk.example.org; dkim=fail; dmarc=fail
+ header.from=accounts-desk.example.org
+Received: from smtp.example.com (smtp.example.com [203.0.113.99]) by
+ mx.example.net with SMTP; Fri, 16 Oct 2026 09:30:12 +0530
+MIME-Version: 1.0
+Content-Type: multipart/mixed; boundary="===============4722529339499105633=="
+
+--===============4722529339499105633==
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+
+Final notice for invoice 20931. Settle immediately at https://billing-update.=
+example.org/final/INV-20931
+
+--===============4722529339499105633==
+Content-Type: application/pdf
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="Statement.pdf"
+MIME-Version: 1.0
+
+JVBERi0xLjQKMSAwIG9iago8PCAvVHlwZSAvQ2F0YWxvZyAvUGFnZXMgMiAwIFIgL09wZW5BY3Rp
+b24gPDwgL1MgL0dvVG8gL0QgWzMgMCBSIC9GaXRdID4+ID4+CmVuZG9iagoyIDAgb2JqCjw8IC9U
+eXBlIC9QYWdlcyAvS2lkcyBbMyAwIFJdIC9Db3VudCAxID4+CmVuZG9iagozIDAgb2JqCjw8IC9U
+eXBlIC9QYWdlIC9QYXJlbnQgMiAwIFIgL01lZGlhQm94IFswIDAgNjEyIDc5Ml0gPj4KZW5kb2Jq
+CnhyZWYKMCA0CjAwMDAwMDAwMDAgNjU1MzUgZiAKMDAwMDAwMDAwOSAwMDAwMCBuIAowMDAwMDAw
+MTAxIDAwMDAwIG4gCjAwMDAwMDAxNTggMDAwMDAgbiAKdHJhaWxlcgo8PCAvU2l6ZSA0IC9Sb290
+IDEgMCBSID4+CnN0YXJ0eHJlZgoyMjkKJSVFT0YK
+
+--===============4722529339499105633==--

@@ -1,0 +1,23 @@
+From: "support@paypal.com" <service@paypa1-secure.example.org>
+To: advait@example.net
+Subject: PayPal Support: your account is limited
+Date: Sat, 17 Oct 2026 10:00:00 +0530
+Message-ID: <9f1c2@mailer.example.net>
+Reply-To: service@paypa1-secure.example.org
+Return-Path: <bounce@paypa1-secure.example.org>
+Authentication-Results: mx.example.net; spf=fail
+ smtp.mailfrom=paypa1-secure.example.org; dkim=none; dmarc=fail
+ header.from=paypa1-secure.example.org
+Received: from relay2.example.org (relay2.example.org [198.51.100.60]) by
+ mx.example.net with ESMTPS; Sat, 17 Oct 2026 09:40:00 +0530
+Received: from app.example.org (unknown [IPv6:2001:db8::25]) by
+ relay2.example.org with SMTP; Sat, 17 Oct 2026 10:00:05 +0530
+Received: from [10.0.0.7] (helo=localhost) by app.example.org with ESMTP; Sat,
+ 17 Oct 2026 10:00:00 +0530
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+
+Your account is limited. Verify now: hxxps://paypa1-secure[.]example[.]org/ve=
+rify
+Questions? helpdesk[@]paypa1-secure[.]example[.]org

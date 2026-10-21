@@ -33,6 +33,11 @@ class AttachmentEvidence:
     mime_type: str
     size_bytes: int
     sha256: str
+    # Added by static analysis (additive; older callers can ignore these).
+    detected_type: Optional[str] = None
+    signals: List[dict] = field(default_factory=list)
+    # Optional hash-reputation / sandbox summary (see evidence/sandbox.py).
+    sandbox: Optional[dict] = None
 
 
 @dataclass
@@ -60,3 +65,7 @@ class EmailEvidence:
         default_factory=AuthenticationEvidence
     )
     evidence_signals: List[dict] = field(default_factory=list)
+
+    # Received-header timeline, oldest hop first (see evidence/received_chain.py)
+    received_hops: List[dict] = field(default_factory=list)
+    origin_ip: Optional[str] = None

@@ -1,0 +1,33 @@
+From: "Accounts Payable" <billing@billing-update.example.org>
+To: advait@example.net
+Subject: Invoice 20931 overdue
+Date: Thu, 15 Oct 2026 10:05:00 +0530
+Message-ID: <inv-20931@billing-update.example.org>
+Reply-To: payments@collect-pay.example.net
+Return-Path: <bounce@mailer.example.net>
+Authentication-Results: mx.example.net; spf=fail
+ smtp.mailfrom=billing-update.example.org; dkim=none; dmarc=fail
+ header.from=billing-update.example.org
+Received: from relay.example.net (relay.example.net [198.51.100.77]) by
+ mx.example.net with SMTP; Thu, 15 Oct 2026 10:05:09 +0530
+MIME-Version: 1.0
+Content-Type: multipart/mixed; boundary="===============5619904396850552585=="
+
+--===============5619904396850552585==
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+
+Invoice 20931 is overdue. Pay now: https://billing-update.example.org/pay/INV=
+-20931
+Invoice attached.
+
+--===============5619904396850552585==
+Content-Type: application/octet-stream
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="Invoice_20931.pdf.exe"
+MIME-Version: 1.0
+
+TVogTUFJTFRSQUNFLVggaGFybWxlc3MgdGVzdCBzdHViLiBUaGlzIGlzIE5PVCBleGVjdXRhYmxl
+Lg==
+
+--===============5619904396850552585==--

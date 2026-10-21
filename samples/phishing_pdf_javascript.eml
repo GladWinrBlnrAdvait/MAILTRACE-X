@@ -1,0 +1,38 @@
+From: "IT Helpdesk" <helpdesk@it-support-desk.example.net>
+To: advait@example.net
+Subject: Mailbox quota exceeded - open attached form
+Date: Wed, 14 Oct 2026 08:45:00 +0530
+Message-ID: <quota-5521@it-support-desk.example.net>
+Reply-To: restore@mailbox-fix.example.org
+Return-Path: <bounce@it-support-desk.example.net>
+Authentication-Results: mx.example.net; spf=softfail
+ smtp.mailfrom=it-support-desk.example.net; dkim=fail; dmarc=fail
+ header.from=it-support-desk.example.net
+Received: from smtp.example.org (smtp.example.org [203.0.113.45]) by
+ mx.example.net with SMTP; Wed, 14 Oct 2026 08:45:11 +0530
+MIME-Version: 1.0
+Content-Type: multipart/mixed; boundary="===============3044265880347031397=="
+
+--===============3044265880347031397==
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+
+Your mailbox is full. Open the attached form to keep your account.
+https://mailbox-fix.example.org/restore
+
+--===============3044265880347031397==
+Content-Type: application/pdf
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="Mailbox_Form.pdf"
+MIME-Version: 1.0
+
+JVBERi0xLjQKMSAwIG9iago8PCAvVHlwZSAvQ2F0YWxvZyAvUGFnZXMgMiAwIFIgL09wZW5BY3Rp
+b24gNCAwIFIgPj4KZW5kb2JqCjIgMCBvYmoKPDwgL1R5cGUgL1BhZ2VzIC9LaWRzIFszIDAgUl0g
+L0NvdW50IDEgPj4KZW5kb2JqCjMgMCBvYmoKPDwgL1R5cGUgL1BhZ2UgL1BhcmVudCAyIDAgUiAv
+TWVkaWFCb3ggWzAgMCA2MTIgNzkyXSA+PgplbmRvYmoKNCAwIG9iago8PCAvUyAvSmF2YVNjcmlw
+dCAvSlMgKGFwcC5hbGVydFwoJ01BSUxUUkFDRS1YIHRlc3Qgb25seSdcKTspID4+CmVuZG9iagp4
+cmVmCjAgNQowMDAwMDAwMDAwIDY1NTM1IGYgCjAwMDAwMDAwMDkgMDAwMDAgbiAKMDAwMDAwMDA3
+NiAwMDAwMCBuIAowMDAwMDAwMTMzIDAwMDAwIG4gCjAwMDAwMDAyMDQgMDAwMDAgbiAKdHJhaWxl
+cgo8PCAvU2l6ZSA1IC9Sb290IDEgMCBSID4+CnN0YXJ0eHJlZgoyODQKJSVFT0YK
+
+--===============3044265880347031397==--

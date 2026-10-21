@@ -1,0 +1,17 @@
+{
+  "data": {
+    "attributes": {
+      "sha256": "275a021bbfb6489e54d471899f7db9d1663fc695ec2fe2a2c4538aabf651fd0f",
+      "meaningful_name": "EICAR_Antivirus_Test.txt",
+      "last_analysis_stats": {
+        "malicious": 66, "suspicious": 0, "undetected": 2, "harmless": 0,
+        "timeout": 0, "confirmed-timeout": 0, "failure": 0, "type-unsupported": 7
+      },
+      "popular_threat_classification": {
+        "popular_threat_category": [{"count": 15, "value": "virus"}, {"count": 2, "value": "trojan"}],
+        "popular_threat_name": [{"count": 60, "value": "eicar"}, {"count": 49, "value": "test"}, {"count": 35, "value": "file"}],
+        "suggested_threat_label": "virus.eicar/test"
+      }
+    }
+  }
+}

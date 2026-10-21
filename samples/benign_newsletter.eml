@@ -1,0 +1,21 @@
+From: "Example News" <news@example.com>
+To: advait@example.net
+Subject: Your weekly digest
+Date: Mon, 12 Oct 2026 09:00:00 +0530
+Message-ID: <digest-1012@example.com>
+Reply-To: news@example.com
+Return-Path: <bounce@example.com>
+Authentication-Results: mx.example.net; spf=pass smtp.mailfrom=example.com;
+ dkim=pass header.d=example.com; dmarc=pass header.from=example.com
+Received: from mail.example.com (mail.example.com [192.0.2.10]) by
+ mx.example.net with ESMTPS; Mon, 12 Oct 2026 09:00:05 +0530
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+
+Hi,
+
+Here is your weekly digest. Read more at https://www.example.com/digest/week-=
+41
+
+The Example News team
