@@ -6,6 +6,7 @@ class Entity(BaseModel):
     value: str
     risk: int = 0      # 0-100
     details: dict = {}
+    risk_reasons: list[str] = []   # why this risk value was given
 
 
 class Relationship(BaseModel):

@@ -35,7 +35,7 @@ pip install -r requirements.txt
 uvicorn backend.main:app --reload
 ```
 
-Open [http://127.0.0.1:8000/dashboard/](http://127.0.0.1:8000/dashboard/) and upload an `.eml` file. Interactive API documentation is at [http://127.0.0.1:8000/docs](http://127.0.0.1:8000/docs).
+Set `MAILTRACE_API_KEY` before deploying (the local prototype uses `mailtrace-dev-key`), then open [http://127.0.0.1:8000/dashboard/](http://127.0.0.1:8000/dashboard/) and sign in with that key. Interactive API documentation is at [http://127.0.0.1:8000/docs](http://127.0.0.1:8000/docs). Set `MAILTRACE_ALLOWED_ORIGINS` to a comma-separated allowlist for a separate frontend origin.
 
 To run the original command-line evidence pipeline:
 
@@ -52,12 +52,15 @@ python main.py samples/sample.eml
 | `GET` | `/api/cases` | List saved local cases |
 | `GET` | `/api/case/{case_id}` | Fetch the normalized case result |
 | `GET` | `/api/report/{case_id}` | Open a standalone HTML investigation report |
+| `GET` | `/api/report/{case_id}/pdf` | Download a structured-evidence PDF report |
 
-The API rejects non-EML files, empty inputs, and uploads over 10 MB. Cases are stored locally in `mailtrace.db` (ignored by Git).
+All case endpoints require `X-API-Key` (or `api_key` for an authenticated report download). The API rejects non-EML files, empty inputs, and uploads over 10 MB; component failures return stable error codes. Cases are stored locally in `mailtrace.db` (ignored by Git).
 
 ## Detection and risk methodology
 
-The shipped **explainable logistic baseline** uses auditable features: suspicious language, URL/IP/attachment counts, authentication failures, header anomalies, Reply-To mismatch, and HTML presence. The risk engine then combines the detection probability with deterministic forensic evidence and optional cross-case correlation.
+The shipped **explainable logistic baseline** uses auditable features: suspicious language, URL/IP/attachment counts, authentication failures, header anomalies, Reply-To mismatch, and HTML presence. It returns the matched lexical terms (or the highest weighted TF-IDF terms for a trained model) with every verdict.
+
+Risk is `clamp(round(45 × phishing_probability) + signal_points + URL_points + attachment_points + correlation_points, 0, 100)`. Signals, URLs, attachments, and graph entities are de-duplicated using stable identifiers before their capped contributions are applied. This is intentional: a duplicated parser finding or MIME part cannot raise a score twice.
 
 This is a transparent prototype baseline—not a claim of production-grade model accuracy. To train an empirical TF-IDF + Logistic Regression model on a labelled dataset with `text` and `label` columns:
 
@@ -65,7 +68,7 @@ This is a transparent prototype baseline—not a claim of production-grade model
 python ml/training/train_baseline.py path/to/emails.csv
 ```
 
-Track precision, recall, F1, false-positive rate, processing time, and dataset provenance before reporting evaluation results.
+The training command uses a stratified 80/20 held-out split and writes `ml/models/evaluation.json`, comparing the legacy lexical baseline against TF-IDF Logistic Regression on precision, recall, F1, and false-positive rate.
 
 ## Development and tests
 
